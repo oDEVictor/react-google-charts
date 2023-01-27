@@ -21,6 +21,7 @@ export function BarChartHorizontal(props) {
   return (
     <div className="BarChart">
         <Chart
+        chartLanguage="pt-br"
           chartType="Bar"
           width="100%"
           height="400px"
