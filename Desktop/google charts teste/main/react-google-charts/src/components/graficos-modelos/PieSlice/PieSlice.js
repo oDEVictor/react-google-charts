@@ -4,7 +4,7 @@ import { Chart } from "react-google-charts";
 
 
 export const options = {
-  title: "Datas",
+ 
   legend: "",
   pieSliceText: "all",
   slices: {
@@ -19,13 +19,16 @@ export const options = {
 
 export function PieSlice(props) {
   return (
+    <><h2>Modelo Fatiado</h2>
     <Chart
       chartType="PieChart"
       data={props.data}
-      options={options}
+      options={props.options}
       width={"100%"}
-      height={"400px"} 
-    />
+      height={"400px"}
+      
+  
+    /></>
   );
 }
 

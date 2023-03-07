@@ -1,118 +1,155 @@
-
 import React, { useEffect, useState } from "react";
 import { PieChart } from "./components/graficos-modelos/PieCharts/PieChart";
-import { PieSlice } from "./components/graficos-modelos/PieSlice/PieSlice";
-import { BarChartHorizontal } from "./components/graficos-modelos/BarChartHorizontal/BarChartHorizontal";
-import { AreaChart } from "./components/graficos-modelos/AreaChart/AreaChart";
-import { BarChartVertical } from "./components/graficos-modelos/BarChartVertical/BarChartVertical";
 import { ColumnChart } from "./components/graficos-modelos/ColumnChart/ColumnChart";
-import { DiffColumnChart } from "./components/graficos-modelos/DiffColumnChart/DiffColumnChart";
+import apiINC from "./service/apiINC";
+import apiWO from "./service/apiWO";
+import apiINCReabertos from "./service/apiINCReabertos";
+import { FullStyled } from "./components/graficos-modelos/PieCharts/styles";
+import { SelectTable } from "./Tables/SelectTables";
+import TableBasic from "./TableBasic/TableBasic";
 
-import api from "./service/api";
+
 
 
 
 
 const App = () => {
-  const [chartData, setChartData] = useState({});
-  const [chartDataCoord, setChartCoord] = useState({});
-  const [filter, setFilter] = useState('Solicitantes');
+  const [data, setData] = useState([]);
+  const [dataWO, setDataWO] = useState([]);
+  const [dataReabertos, setdataReabertos] = useState([]);
+  const [select, setSelect] = useState('');
+
+
+
+
+
+function onChange(event) {
+  setSelect(event.value)
+
+}
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api();
-        const data = response.data;
-        console.log(data);
-        const solicitantes = {};
-        const coordenacoes = {};
 
-        data.body.forEach((element) => {
-          const solicitante = element["SOLICITANTE"];
-         
-          if (solicitante in solicitantes) {
-            solicitantes[solicitante] += 1;
-          } else {
-            solicitantes[solicitante] = 1;
-          }
-
-        });
-
-        data.body.forEach((element) => {
-          const coordenacao = element["COORDENACAO"];
-         
-          if (coordenacao in coordenacoes) {
-            coordenacoes[coordenacao] += 1;
-          } else {
-            coordenacoes[coordenacao] = 1;
-          }
-
-        });
-        // const dataForChart = Object.entries(solicitantes).map(([solicitante, value]) => [ solicitante, value, "#FF494C" ]);
-
-        const dataForChart = [['Solicitante', 'Quantidade' ],
-      ].concat(
-          Object.entries(solicitantes).map(([solicitante, value]) => [ solicitante, value])
-        );
-
-         setChartData(dataForChart);
-         console.log(dataForChart);
-
-         const dataCoordination = [['Coordenação', 'Quantidade'],
-      ].concat(
-          Object.entries(coordenacoes).map(([coordenacao, value]) => [ coordenacao, value])
-        );
-
-          setChartCoord(dataCoordination)
-
-         console.log(dataCoordination);
-
-        if (dataForChart[0].length >= 2) {
-          setChartData(dataForChart);
-        } else {
-          console.error("Table has no columns.");
-        }
-
-      }catch (error) {
+        const response = await apiINC();
+        const data = response.data.body;
+       
+        setData(data)
+      } catch (error) {
         console.error(error);
       }
     };
-  
-
+   
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-        
-  // function onFilterChange(event){
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+
+        const response = await apiWO();
+        const dataWO = response.data.body;
+      
+        setDataWO(dataWO);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+   
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await apiINCReabertos();
+        const dataReabertos = response.data.body;
+        setdataReabertos(dataReabertos);
+      } catch (error) {
+        console.error(error);
+      }
+    };
     
-  //   setFilter(event.target.value);
-  //   if (event.target.value === "Coordenação") {
-  //     <PieChart data = {chartDataCoord} />
-  //   }else {
-  //     <PieChart data = {chartData} />
-  //   }
-  // // }
-  // console.log(onFilterChange)
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
+  const getDataByKey = (key, title, data) => {
+    const dataByKey = {};
+
+    data.forEach((element) => {
+      const value = element[key];
+
+      if (value in dataByKey) {
+        dataByKey[value] += 1;
+      } else {
+        dataByKey[value] = 1;
+      }
+    });
+
+
+
+
+    return {
+      options: {
+        
+      },
+      title: title,
+      data: [[title, 'Quantidade'],
+      ...Object.entries(dataByKey).map(([keyValue, value]) => [keyValue, value]),
+      ]
+    };
+  }
+
+
+  const dataClient = getDataByKey("CLIENTE_SOLICITANTE", "Clientes Solicitantes", data);
+  const dataStatus = getDataByKey("STATUS", "Status INC", data);
+  const dataDesig = getDataByKey("DESIGNADO", "Designados", data);
+  const dataStatusWO = getDataByKey("STATUS", "Status WO", dataWO)
+
   return (
     <div>
-      <h1>Grafics in React</h1>
-      <select >
-          <option>Solicitantes</option>
-          <option>Coordenação</option>
-         
-      </select>
-      <PieChart  data = {chartData} />
-      <BarChartHorizontal />
-      <BarChartVertical />
-      <AreaChart />
-      <ColumnChart  data = {chartDataCoord} style = {{color: "#0592FF"}} />
-      <PieSlice data = {chartDataCoord} />
-      <DiffColumnChart  />
+
+      <FullStyled>
+        <h1>Dashboard Atendimentos de Sustentacao do MEC</h1>
+
+        <PieChart {...dataStatusWO} />
+        <PieChart {...getDataByKey('PRIORIDADE', 'Prioridade INC', dataReabertos)} />
+        <PieChart {...dataStatus} />
+        <PieChart {...dataClient} />
+        <PieChart {...dataStatus} />
+        <PieChart {...dataDesig} />
+
+
+        <ColumnChart {...dataDesig} />
+
+        <SelectTable value = {select} onChange = {onChange}
+        />
+        
+        {select === 'apiINC' ?  <TableBasic data = {data} title = {'Tabela INC'} /> : null }
+        {select === 'apiINCReabertos' ? <TableBasic data = {dataReabertos} title = {'Tabela INC Reabertos'}/> : null}
+        {select === 'apiWO' ?<TableBasic data = {dataWO} title = {'Tabela WO'} /> : null}
+        
+        
+    
+      
+
+
+
+
+
+
+      </FullStyled>
     </div>
+
   );
 };
 
 
-
-
 export default App;
+
 
