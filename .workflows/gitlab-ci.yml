@@ -1,4 +1,4 @@
-dashboard react-google-charts:
+react-google-charts:
   trigger:
     strategy: depend
     include: react-google-charts/.workflows/gitlab-ci.yml
