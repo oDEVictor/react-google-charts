@@ -1,12 +1,11 @@
-react-google-charts:
-  trigger:
-    strategy: depend
-    include: react-google-charts/.workflows/gitlab-ci.yml
-  variables:
-    PROJECT_DIR: react-google-charts
-  rules:
-    - changes:
-        - 'react-google-charts/*'
-workflow:
-  rules:
-    - if: $CI_COMMIT_BRANCH
+variables:
+  LANGUAGE: javascript
+  NODEJS_VERSION: '16.17'
+  NODEJS_PACKAGE_MANAGER: npm
+  PROJECT_SLUG: react-google-charts
+  CHARTS_PROJECT_PATH: react-charts/charts
+include:
+  - project: devops/pipeline-templates
+    ref: master
+    file:
+      - /Templates/Auto-DevOps.gitlab-ci.yml
