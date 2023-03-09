@@ -1,0 +1,12 @@
+dashboard react-google-charts:
+  trigger:
+    strategy: depend
+    include: react-google-charts/.workflows/gitlab-ci.yml
+  variables:
+    PROJECT_DIR: react-google-charts
+  rules:
+    - changes:
+        - 'react-google-charts/*'
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH
