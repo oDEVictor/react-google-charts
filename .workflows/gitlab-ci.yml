@@ -2,7 +2,7 @@ variables:
   LANGUAGE: javascript
   NODEJS_VERSION: '16.17'
   NODEJS_PACKAGE_MANAGER: npm
-  PROJECT_SLUG: react-google-charts
+  PROJECT_SLUG: dashboard
   CHARTS_PROJECT_PATH: react-charts/charts
 include:
   - project: devops/pipeline-templates
