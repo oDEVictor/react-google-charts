@@ -34,7 +34,7 @@ function Columnss(objeto) {
 
 
 function TableBasic(props) {
-    const coluna = Columnss(props.data[0])
+    const coluna = Columnss(props.data[0]);
     return (
         <MUIDataTable
             

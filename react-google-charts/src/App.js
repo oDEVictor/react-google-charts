@@ -7,7 +7,9 @@ import apiINCReabertos from "./service/apiINCReabertos";
 import { FullStyled } from "./components/graficos-modelos/PieCharts/styles";
 import { SelectTable } from "./Tables/SelectTables";
 import TableBasic from "./TableBasic/TableBasic";
-
+import _ from 'lodash';
+import normalize from "./utils/normalize";
+import { capitalize } from "lodash";
 
 const App = () => {
   const [loading, isLoading] = useState(false);
@@ -16,25 +18,52 @@ const App = () => {
   const [dataReabertos, setdataReabertos] = useState([]);
   const [select, setSelect] = useState('apiINC');
 
-  
+
   function onChange(event) {
     setSelect(event.value)
+  }
+
+  function normalizeItems(data) {
+
+    return data.map((item) => {
+      const newItem = {};
+
+      for (const key in item) {
+        let value = item[key];
+
+        if (!value) {
+          value = 'N/D';
+        } else {
+          const wordList = ['pendente'];
+
+          wordList.forEach(w => {
+            if (value.toLowerCase().includes(w)) {
+              value = capitalize(value);
+            }
+          })
+        }
+
+        newItem[normalize(key)] = value;
+
+      }
+      return newItem;
+    });
 
   }
 
-  const allData = [...dataINC, ...dataWO, ...dataReabertos];
+  const allData = [...dataINC, ...dataWO,];
   useEffect(() => {
     async function fetchData() {
       isLoading(true);
       try {
         const INCResponse = await apiINC.get();
-        setDataINC(INCResponse.data['body']);
+        setDataINC(normalizeItems(INCResponse.data['body']));
 
         const WOResponse = await apiWO.get();
-        setDataWO(WOResponse.data['body'])
+        setDataWO(normalizeItems(WOResponse.data['body']))
 
         const INCReabertosResponse = await apiINCReabertos.get();
-        setdataReabertos(INCReabertosResponse.data['body']);
+        setdataReabertos(normalizeItems(INCReabertosResponse.data['body']));
 
         isLoading(false);
       } catch (error) {
@@ -46,8 +75,9 @@ const App = () => {
   }, []);
 
   const getDataByKey = (key, title, data) => {
-    const dataByKey = {};
+    let dataByKey = {};
 
+    key = normalize(key);
     data.forEach((element) => {
       const value = element[key];
 
@@ -58,12 +88,16 @@ const App = () => {
       }
     });
 
+    dataByKey = Object.entries(dataByKey);
+    dataByKey = _.orderBy(dataByKey);
+
     return {
       options: {},
       title: title,
 
       data: [[title, 'Quantidade'],
-      ...Object.entries(dataByKey).map(([keyValue, value]) => [keyValue, value]),
+      ...dataByKey,
+        // ...Object.entries(dataByKey).map(([keyValue, value]) => [keyValue, value]),
       ]
     };
   }

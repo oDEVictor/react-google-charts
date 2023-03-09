@@ -18,6 +18,7 @@ export const options = {
 };
 
 export function PieSlice(props) {
+  const sliceVisibilityThreshold = props.resumeData? 0.02 : 0; 
   return (
     <div style={{ height: 400}}>
       {props.title && <h3 className='pt-4 h-10'>{props.title}</h3>}
@@ -25,7 +26,7 @@ export function PieSlice(props) {
         <Chart
           chartType="PieChart"
           data={props.data}
-          options={{ ...props.options, backgroundColor: 'transparent', sortAscending: true, sortColumn: 0, sliceVisibilityThreshold: 0.02 }}
+          options={{ ...props.options, backgroundColor: 'transparent', sortAscending: true, sortColumn: 0, sliceVisibilityThreshold: sliceVisibilityThreshold }}
           width={"100%"}
           height={"100%"}
 
