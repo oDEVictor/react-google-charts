@@ -3,9 +3,13 @@ import styled from "styled-components";
 export const FullStyled = styled.div`
   text-align: center !important;
   display: block !important;
-  border: solid 10px black !important;
-
-  h2 {
+  border: none;
+  
+  #body-content {
+    /* border: solid 10px black !important; */
+    padding-top: 1.5rem;
+  }
+  .graph-title {
     border: solid 0.5px black !important;
     margin: 0 10px;
     padding: 5px 0;
@@ -15,7 +19,7 @@ export const FullStyled = styled.div`
     text-align: center !important;
   }
 
-  .status{
+  .status {
     display: flex;
   }
 
