@@ -126,7 +126,7 @@ const App = () => {
   return (
     <FullStyled>
       <div className='container-fluid p-0'>
-        <h1 className='py-2'>Painel de Monitoramento de Chamados de Sustentação do MEC</h1>
+        <h1 className='py-2'>Monitoramento de Chamados de Sustentação do MEC</h1>
 
         <h2>Status</h2>
         <div id='graficos-status' className='row'>
