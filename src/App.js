@@ -10,6 +10,7 @@ import TableBasic from "./TableBasic/TableBasic";
 import _ from 'lodash';
 import normalize from "./utils/normalize";
 import { capitalize } from "lodash";
+import Header from "./components/header";
 
 const App = () => {
   const [loading, isLoading] = useState(false);
@@ -125,10 +126,12 @@ const App = () => {
 
   return (
     <FullStyled>
-      <div className='container-fluid p-0'>
-        <h1 className='py-2'>Monitoramento de Chamados de Sustentação do MEC</h1>
+      <Header title={'Monitoramento de Chamados de Sustentação do MEC'} showLogo />
+      <div id='body-content' className='container-fluid'>
 
-        <h2>Status</h2>
+        {/* <h1 className='py-2'>Monitoramento de Chamados de Sustentação do MEC</h1> */}
+
+        <h2 className='graph-title'>Status</h2>
         <div id='graficos-status' className='row'>
           <PieChart {...dataStatusWO} />
           <PieChart {...dataStatusINC} />
@@ -136,23 +139,23 @@ const App = () => {
         </div>
 
         <div id='Cliente-designado'>
-          <h2>Designados</h2>
+          <h2 className='graph-title'>Designados</h2>
           <PieSlice resumeData {...getDataByKey('DESIGNADO', '', allData)} />
         </div>
 
         <div id='Clientes-requisistantes'>
-          <h2>Requisitantes</h2>
+          <h2 className='graph-title'>Requisitantes</h2>
           <PieChart resumeData {...getDataByKey('CLIENTE_SOLICITANTE', '', allData)} />
         </div>
 
-        <h2>Prioridade</h2>
+        <h2 className='graph-title'>Prioridade</h2>
         <div id='graficos-prioridade' className='row'>
           <PieChart {...dataPrioridadeINC} />
           <PieChart {...dataPrioridadeWO} />
           <PieChart {...dataPrioridadeINCReabertos} />
         </div>
 
-        <h2>Tipo de Solução</h2>
+        <h2 className='graph-title'>Tipo de Solução</h2>
         <div id='graficos-criticidade' className='row'>
           <PieChart {...dataCriticidadeINC} />
           <PieChart resumeData {...dataCriticidadeWO} />
